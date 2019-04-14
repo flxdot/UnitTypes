@@ -1,4 +1,4 @@
-from pyUnitTypes.basics import BaseUnit, Conversion, BasicTypes
+from pyUnitTypes.basics import BaseUnit, Conversion
 
 
 class Length(BaseUnit):
@@ -30,70 +30,6 @@ class Length(BaseUnit):
         else:
             raise TypeError('Can not create object of type {0} from object of type {1}'.format(type(self).__name__,
                                                                                                type(value).__name__))
-
-    def __mul__(self, other):
-        """Implements multiplication."""
-
-        if isinstance(other, (float, int)):
-            self.value *= other
-            return self
-        elif issubclass(type(other), self.type):
-            self.value = self.from_base.convert(self._base_value * other.base_value)
-            return self
-        else:
-            if issubclass(type(other), BaseUnit):
-                raise NotImplementedError(
-                    'No method to multiply unit {0} with unit {1} implemented.'.format(self.name, other.name))
-            else:
-                raise NotImplementedError(
-                    'Can not multiply Unit {0} with object of type {1}'.format(self.name, type(other).__name__))
-
-    def __div__(self, other):
-        """Implements division using the / operator."""
-
-        if isinstance(other, (float, int)):
-            self.value /= other
-            return self
-        elif issubclass(type(other), self.type):
-            self.value = self.from_base.convert(self._base_value * other.base_value)
-            return self
-        else:
-            if issubclass(type(other), BaseUnit):
-                raise NotImplementedError(
-                    'No method to divide unit {0} with unit {1} implemented.'.format(self.name, other.name))
-            else:
-                raise NotImplementedError(
-                    'Can not divide Unit {0} by object of type {1}'.format(self.name, type(other).__name__))
-
-    def __imul__(self, other):
-        """Implements multiplication."""
-
-        if isinstance(other, (float, int)):
-            self.value *= other
-        elif issubclass(type(other), self.type):
-            self.value = self.from_base.convert(self._base_value * other.base_value)
-        else:
-            if issubclass(type(other), BaseUnit):
-                raise NotImplementedError(
-                    'No method to multiply unit {0} with unit {1} implemented.'.format(self.name, other.name))
-            else:
-                raise NotImplementedError(
-                    'Can not multiply Unit {0} with object of type {1}'.format(self.name, type(other).__name__))
-
-    def __idiv__(self, other):
-        """Implements division using the / operator."""
-
-        if isinstance(other, (float, int)):
-            self.value /= other
-        elif issubclass(type(other), self.type):
-            self.value = self.from_base.convert(self._base_value / other.base_value)
-        else:
-            if issubclass(type(other), BaseUnit):
-                raise NotImplementedError(
-                    'No method to divide unit {0} by unit {1} implemented.'.format(self.name, other.name))
-            else:
-                raise NotImplementedError(
-                    'Can not divide Unit {0} by object of type {1}'.format(self.name, type(other).__name__))
 
 
 class Meter(Length):

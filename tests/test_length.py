@@ -5,13 +5,9 @@ from pyUnitTypes.length import Meter, CentiMeter, MilliMeter
 class TestLengths(TestCase):
     """Tests for length.py module"""
 
-    def test_Meter(self):
+    def test_Conversions(self):
         """Tests for Meter class."""
 
         self.assertEqual(Meter(1), Meter(1))
-
-    def test_eq(self):
-        """Tests the equality of the length classes."""
-
-        self.assertTrue(Meter(1) == CentiMeter(100))
-        self.assertTrue(Meter(1) == MilliMeter(1000))
+        self.assertEqual(Meter(1), CentiMeter(100))
+        self.assertEqual(Meter(1), MilliMeter(1000))
