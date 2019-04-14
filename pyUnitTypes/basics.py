@@ -1,6 +1,7 @@
 from enum import Enum
 import abc
 import math
+import copy
 
 
 class System(Enum):
@@ -52,6 +53,23 @@ class Conversion:
 
         return self.factor * float(val) + self.offset
 
+    def __copy__(self):
+        """Defines behavior for copy.copy() for instances of your class. copy.copy() returns a shallow copy of your
+        object -- this means that, while the instance itself is a new instance, all of its data is referenced
+        -- i.e., the object itself is copied, but its data is still referenced (and hence changes to data in a shallow
+        copy may cause changes in the original)."""
+
+        return Conversion(factor=self.factor, offset=self.offset)
+
+    def __deepcopy__(self, memodict={}):
+        """Defines behavior for copy.deepcopy() for instances of your class. copy.deepcopy() returns a deep copy of
+        your object -- the object and its data are both copied. memodict is a cache of previously copied objects
+        -- this optimizes copying and prevents infinite recursion when copying recursive data structures. When you want
+        to deep copy an individual attribute, call copy.deepcopy() on that attribute with memodict as the first
+        argument."""
+
+        return Conversion(factor=self.factor, offset=self.offset)
+
     def __invert__(self):
         """Creates the inverted conversion of this class."""
 
@@ -91,11 +109,13 @@ class BaseUnit:
         self._type = unit_type
         self._base_value = float()
         self._base_class = base_class
-        self._to_base = to_base
+        self._to_base_converter = to_base
+        self.to_base = self._to_base_converter.convert
         if from_base is not None:
-            self._from_base = from_base
+            self._from_base_converter = from_base
         else:
-            self._from_base = not to_base
+            self._from_base_converter = copy.copy(to_base).__invert__()
+        self.from_base = self._from_base_converter.convert
 
     def __repr__(self):
         return "{0} {1}".format(self.value, self.symbol)
@@ -113,6 +133,78 @@ class BaseUnit:
 
         self.value = -self.value
         return self
+
+    def __eq__(self, other):
+        """Defines behavior for the equality operator, ==."""
+
+        if isinstance(other, (float, int)):
+            return self.value == other
+        elif issubclass(type(other), self.type):
+            return self.base_value == other.base_value
+        else:
+            return False
+
+    def __ne__(self, other):
+        """Defines behavior for the inequality operator, !=."""
+
+        if isinstance(other, (float, int)):
+            return self.value != other
+        elif issubclass(type(other), self.type):
+            return self.base_value != other.base_value
+        else:
+            return True
+
+    def __lt__(self, other):
+        """Defines behavior for the less-than operator, <."""
+
+        if isinstance(other, (float, int)):
+            return self.value < other
+        elif issubclass(type(other), self.type):
+            return self.base_value < other.base_value
+        else:
+            if issubclass(type(other), BaseUnit):
+                raise TypeError('Can not compare Unit {0} to Unit {1}'.format(self.name, type(other).__name__))
+            else:
+                raise TypeError('Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
+
+    def __gt__(self, other):
+        """Defines behavior for the greater-than operator, >."""
+
+        if isinstance(other, (float, int)):
+            return self.value > other
+        elif issubclass(type(other), self.type):
+            return self.base_value > other.base_value
+        else:
+            if issubclass(type(other), BaseUnit):
+                raise TypeError('Can not compare Unit {0} to Unit {1}'.format(self.name, type(other).__name__))
+            else:
+                raise TypeError('Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
+
+    def __le__(self, other):
+        """Defines behavior for the less-than-or-equal-to operator, <=."""
+
+        if isinstance(other, (float, int)):
+            return self.value <= other
+        elif issubclass(type(other), self.type):
+            return self.base_value <= other.base_value
+        else:
+            if issubclass(type(other), BaseUnit):
+                raise TypeError('Can not compare Unit {0} to Unit {1}'.format(self.name, type(other).__name__))
+            else:
+                raise TypeError('Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
+
+    def __ge__(self, other):
+        """Defines behavior for the greater-than-or-equal-to operator, >=."""
+
+        if isinstance(other, (float, int)):
+            return self.value >= other
+        elif issubclass(type(other), self.type):
+            return self.base_value >= other.base_value
+        else:
+            if issubclass(type(other), BaseUnit):
+                raise TypeError('Can not compare Unit {0} to Unit {1}'.format(self.name, type(other).__name__))
+            else:
+                raise TypeError('Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
 
     def __abs__(self):
         """Implements behavior for the built in abs() function."""
@@ -148,6 +240,12 @@ class BaseUnit:
 
         return int(self.value)
 
+    def __nonzero__(self):
+        """Defines behavior for when bool() is called on an instance of your class. Should return True or False,
+        depending on whether you would want to consider the instance to be True or False."""
+
+        return bool(self.value)
+
     def __add__(self, other):
         """Implements addition."""
 
@@ -176,7 +274,7 @@ class BaseUnit:
         elif issubclass(type(other), BaseUnit):
             # check if both operands are of the same unit type, because can not add meters to degrees celsius
             if self._type != other.type:
-                raise TypeError('Can not subtract {0} from {1}.'.format(other._type, self._type))
+                raise TypeError('Can not subtract {0} from {1}.'.format(other.type, self._type))
 
             self_type = type(self)
             return self_type(self._base_value - other.base_value)
@@ -195,7 +293,7 @@ class BaseUnit:
             if self._type != other.type:
                 raise TypeError('Can not add {0} to {1}.'.format(other.type, self._type))
 
-            self.value = self._from_base.convert(self._base_value + other.base_value)
+            self.value = self.from_base(self._base_value + other.base_value)
         else:
             raise TypeError('Can not add objects of type {0} to object of type {1}'.format(type(other).__name__,
                                                                                            type(self).__name__))
@@ -211,7 +309,7 @@ class BaseUnit:
             if self._type != other.type:
                 raise TypeError('Can not subtract {0} from {1}.'.format(other.type, self._type))
 
-            self.value = self._from_base.convert(self._base_value - other.base_value)
+            self.value = self.from_base(self._base_value - other.base_value)
         else:
             raise TypeError('Can not subtract objects of type {0} from object of type {1}'.format(type(other).__name__,
                                                                                                   type(self).__name__))
@@ -226,7 +324,7 @@ class BaseUnit:
         # store the value
         self._value = float(new_value)
         # convert the value into the base class
-        self._base_value = self._to_base.convert(self._value)
+        self._base_value = self.to_base(self._value)
 
     @property
     def base_value(self):

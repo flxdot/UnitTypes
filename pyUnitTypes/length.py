@@ -1,4 +1,3 @@
-import abc
 from pyUnitTypes.basics import BaseUnit, Conversion, BasicTypes
 
 
@@ -8,27 +7,26 @@ class Length(BaseUnit):
     with the different length based units.
     """
 
-    __metaclass__ = abc.ABCMeta
-
     def __init__(self, name, symbol, to_base, value, from_base=None):
         """Constructor of the Length Superclass. Please don't use this class as standalone.
 
         :param name: (mandatory, string) name of the unit as word
         :param symbol: (mandatory, string) symbol of the unit
-        :param to_base: (mandatory, pyUnitTypes.basics.Conversion) conversion object to convert the value to the base value
+        :param to_base: (mandatory, pyUnitTypes.basics.Conversion) conversion object to convert the value to the base
+        value
         :param value: (mandatory, float, int or subclass of pyUnitTypes.length.Length) The actual value of the class.
-        :param from_base: (optional, pyUnitTypes.basics.Conversion) conversion object to convert the value back from the base
-        to the value of the actual class. Default: inversion of to_base
+        :param from_base: (optional, pyUnitTypes.basics.Conversion) conversion object to convert the value back from
+        the base to the value of the actual class. Default: inversion of to_base
         """
 
-        super().__init__(name=name, symbol=symbol, unit_type=BasicTypes.LENGTH, base_class=Meter, to_base=to_base,
+        super().__init__(name=name, symbol=symbol, unit_type=Length, base_class=Meter, to_base=to_base,
                          from_base=from_base)
 
         # store the value and calculate the value in the base class
         if isinstance(value, (float, int)):
             self.value = value
-        elif issubclass(type(other), Length):
-            self.value = self._from_base.convert(value.value)
+        elif issubclass(type(value), Length):
+            self.value = self.from_base.convert(value.value)
         else:
             raise TypeError('Can not create object of type {0} from object of type {1}'.format(type(self).__name__,
                                                                                                type(value).__name__))
@@ -39,8 +37,8 @@ class Length(BaseUnit):
         if isinstance(other, (float, int)):
             self.value *= other
             return self
-        elif issubclass(type(other), Length):
-            self.value = self._from_base.convert(self._base_value * other.base_value)
+        elif issubclass(type(other), self.type):
+            self.value = self.from_base.convert(self._base_value * other.base_value)
             return self
         else:
             if issubclass(type(other), BaseUnit):
@@ -56,8 +54,8 @@ class Length(BaseUnit):
         if isinstance(other, (float, int)):
             self.value /= other
             return self
-        elif issubclass(type(other), Length):
-            self.value = self._from_base.convert(self._base_value * other.base_value)
+        elif issubclass(type(other), self.type):
+            self.value = self.from_base.convert(self._base_value * other.base_value)
             return self
         else:
             if issubclass(type(other), BaseUnit):
@@ -72,8 +70,8 @@ class Length(BaseUnit):
 
         if isinstance(other, (float, int)):
             self.value *= other
-        elif issubclass(type(other), Length):
-            self.value = self._from_base.convert(self._base_value * other.base_value)
+        elif issubclass(type(other), self.type):
+            self.value = self.from_base.convert(self._base_value * other.base_value)
         else:
             if issubclass(type(other), BaseUnit):
                 raise NotImplementedError(
@@ -87,8 +85,8 @@ class Length(BaseUnit):
 
         if isinstance(other, (float, int)):
             self.value /= other
-        elif issubclass(type(other), Length):
-            self.value = self._from_base.convert(self._base_value / other.base_value)
+        elif issubclass(type(other), self.type):
+            self.value = self.from_base.convert(self._base_value / other.base_value)
         else:
             if issubclass(type(other), BaseUnit):
                 raise NotImplementedError(
