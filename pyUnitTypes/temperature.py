@@ -34,7 +34,7 @@ class Temperature(BaseUnit):
 
 
 class Celsius(Temperature):
-    """Kelvin"""
+    """Celcius: 0°C is at water freezing at sea level and 100°C is boiling temperature of water at sea level."""
 
     def __init__(self, value=float()):
         """Create instance of the kelvin class.
@@ -46,7 +46,7 @@ class Celsius(Temperature):
 
 
 class Kelvin(Temperature):
-    """Kelvin"""
+    """Kelvin 0 is at absolute min temperature possible"""
 
     def __init__(self, value=float()):
         """Create instance of the kelvin class.
@@ -58,7 +58,7 @@ class Kelvin(Temperature):
 
 
 class Fahrenheit(Temperature):
-    """Kelvin"""
+    """Fahrenheit... that strange temperature the americans use."""
 
     def __init__(self, value=float()):
         """Create instance of the kelvin class.

@@ -45,7 +45,7 @@ class Meter(Length):
 
 
 class CentiMeter(Length):
-    """The base SI unit of lengths."""
+    """The measurement only carpenters use."""
 
     def __init__(self, value=float()):
         """Create instance of the meter class.
@@ -57,7 +57,7 @@ class CentiMeter(Length):
 
 
 class MilliMeter(Length):
-    """The base SI unit of lengths."""
+    """."""
 
     def __init__(self, value=float()):
         """Create instance of the meter class.

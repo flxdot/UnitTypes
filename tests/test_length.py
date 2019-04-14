@@ -3,7 +3,7 @@ from pyUnitTypes.length import Meter, CentiMeter, MilliMeter
 
 
 class TestLengths(TestCase):
-    """Tests for length.py module"""
+    """Tests for length.rst module"""
 
     def test_constructor(self):
         """Tests the constructors of the Length class."""
