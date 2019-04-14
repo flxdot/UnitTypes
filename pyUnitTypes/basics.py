@@ -77,8 +77,8 @@ class BaseUnit:
         :param name: (mandatory, string) name of the unit as word
         :param symbol: (mandatory, string) symbol of the unit
         :param base_class: (mandatory, type) class of the base class
-        :param to_base: (mandatory, pyUnit.basics.Conversion) conversion object to convert the value to the base value
-        :param from_base: (optional, pyUnit.basics.Conversion) conversion object to convert the value back from the base
+        :param to_base: (mandatory, pyUnitTypes.basics.Conversion) conversion object to convert the value to the base value
+        :param from_base: (optional, pyUnitTypes.basics.Conversion) conversion object to convert the value back from the base
         to the value of the actual class. Default: inversion of to_base
         """
 

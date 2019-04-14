@@ -1,5 +1,5 @@
 import abc
-from pyUnit.basics import BaseUnit, Conversion, BasicTypes
+from pyUnitTypes.basics import BaseUnit, Conversion, BasicTypes
 
 
 class Length(BaseUnit):
@@ -15,9 +15,9 @@ class Length(BaseUnit):
 
         :param name: (mandatory, string) name of the unit as word
         :param symbol: (mandatory, string) symbol of the unit
-        :param to_base: (mandatory, pyUnit.basics.Conversion) conversion object to convert the value to the base value
-        :param value: (mandatory, float, int or subclass of pyUnit.length.Length) The actual value of the class.
-        :param from_base: (optional, pyUnit.basics.Conversion) conversion object to convert the value back from the base
+        :param to_base: (mandatory, pyUnitTypes.basics.Conversion) conversion object to convert the value to the base value
+        :param value: (mandatory, float, int or subclass of pyUnitTypes.length.Length) The actual value of the class.
+        :param from_base: (optional, pyUnitTypes.basics.Conversion) conversion object to convert the value back from the base
         to the value of the actual class. Default: inversion of to_base
         """
 
