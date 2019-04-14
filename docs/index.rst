@@ -7,8 +7,8 @@ Contents
    :maxdepth: 2
 
    overview
-   length
-   temperature
+   base-units
+   composite-units
 
 Index
 ==================
