@@ -26,7 +26,7 @@ class Length(BaseUnit):
         if isinstance(value, (float, int)):
             self.value = value
         elif issubclass(type(value), Length):
-            self.value = self.from_base.convert(value.value)
+            self.value = self.from_base(value.base_value)
         else:
             raise TypeError('Can not create object of type {0} from object of type {1}'.format(type(self).__name__,
                                                                                                type(value).__name__))

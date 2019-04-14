@@ -8,16 +8,6 @@ class TestBaseUnit(TestCase):
     """Tests for basics.py module. Most of the basic tests will be done with the Meter class. But the all magic methods
     are implemented in the BasicUnit class of the basics.py"""
 
-    def setUp(self):
-        """The setup method for each test"""
-
-        self.PosIntUnit = BaseUnit(name='PosIntUnit', symbol='unit', base_class=BaseUnit, to_base=Conversion(factor=1),
-                                   unit_type=BaseUnit, from_base=Conversion)
-        self.PosIntKiloUnit = BaseUnit(name='PosIntKiloUnit', symbol='unit', base_class=BaseUnit,
-                                       to_base=Conversion(factor=1000), unit_type=BaseUnit, from_base=Conversion)
-        self.PosIntMilliUnit = BaseUnit(name='PosIntMilliUnit', symbol='unit', base_class=BaseUnit,
-                                        to_base=Conversion(factor=0.001), unit_type=BaseUnit, from_base=Conversion)
-
     def test_general(self):
         """Test some general behaviour of the Length superclass"""
 
@@ -205,8 +195,24 @@ class TestConversion(TestCase):
     def test_invert(self):
         """Tests the invert functionality."""
 
+        # non zero
         conv = Conversion(factor=2, offset=3)
         conv_inv = copy.copy(conv).__invert__()
 
         self.assertEqual(conv_inv.factor, 1/conv.factor)
         self.assertEqual(conv_inv.offset, -conv.offset/conv.factor)
+
+        # zero factpr
+        conv = Conversion(factor=0, offset=1)
+        conv_inv = copy.copy(conv).__invert__()
+
+        self.assertEqual(conv_inv.factor, 0)
+        self.assertEqual(conv_inv.offset, -conv.offset)
+
+        # zero offset
+        conv = Conversion(factor=2, offset=0)
+        conv_inv = copy.copy(conv).__invert__()
+
+        self.assertEqual(conv_inv.factor, 1/conv.factor)
+        self.assertEqual(conv_inv.offset, 0)
+

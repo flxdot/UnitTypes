@@ -1,3 +1,4 @@
+import copy
 from pyUnitTypes.basics import BaseUnit, Conversion
 
 
@@ -26,7 +27,44 @@ class Temperature(BaseUnit):
         if isinstance(value, (float, int)):
             self.value = value
         elif issubclass(type(value), Temperature):
-            self.value = self.from_base.convert(value.value)
+            self.value = self.from_base(value.base_value)
         else:
             raise TypeError('Can not create object of type {0} from object of type {1}'.format(type(self).__name__,
                                                                                                type(value).__name__))
+
+
+class Celsius(Temperature):
+    """Kelvin"""
+
+    def __init__(self, value=float()):
+        """Create instance of the kelvin class.
+
+        :param value: (optional, int or float)
+        """
+
+        super().__init__(name='Celsius', symbol='°C', to_base=Conversion(), value=value)
+
+
+class Kelvin(Temperature):
+    """Kelvin"""
+
+    def __init__(self, value=float()):
+        """Create instance of the kelvin class.
+
+        :param value: (optional, int or float)
+        """
+
+        super().__init__(name='Kelvin', symbol='K', to_base=Conversion(1, -273.15), value=value)
+
+
+class Fahrenheit(Temperature):
+    """Kelvin"""
+
+    def __init__(self, value=float()):
+        """Create instance of the kelvin class.
+
+        :param value: (optional, int or float)
+        """
+
+        super().__init__(name='Fahrenheit', symbol='°F', to_base=Conversion(5/9, -160/9),
+                         from_base=Conversion(1.8, 32), value=value)

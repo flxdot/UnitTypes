@@ -1,5 +1,4 @@
 from enum import Enum
-import abc
 import math
 import copy
 
@@ -73,8 +72,11 @@ class Conversion:
     def __invert__(self):
         """Creates the inverted conversion of this class."""
 
-        self.offset = -(self.offset / self.factor)
-        self.factor = 1 / self.factor
+        if self.factor != 0:
+            self.offset = -(self.offset / self.factor)
+            self.factor = 1 / self.factor
+        else:
+            self.offset = -self.offset
         return self
 
     def __repr__(self):
@@ -85,8 +87,6 @@ class BaseUnit:
     """
     The BaseUnit class is the basic class of every Unit class of this package. It provides general magic methods.
     """
-
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, name, symbol, base_class, to_base, unit_type, from_base=None):
         """
