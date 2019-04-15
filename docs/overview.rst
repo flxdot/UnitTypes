@@ -48,9 +48,7 @@ The following mathematical operators can be used to calculate with the units.
 
     from pyUnitTypes.length import Meter, KiloMeter
 
-    print(Meter(1000) + KiloMeter(1))
-
-  prints: ``2.0 km``
+    two_kilometer = Meter(1000) + KiloMeter(1)
 
 
 * **sub (-)**: Works as within a UnitType package. Raises a TypeError if Units from different modules are used.
@@ -59,9 +57,7 @@ The following mathematical operators can be used to calculate with the units.
 
     from pyUnitTypes.length import Meter, KiloMeter
 
-    print(KiloMeter(1) - Meter(250))
-
-  prints: ``0.75 km``
+    half_kilometer = KiloMeter(1) - Meter(500)
 
 
 * **mul (*)**: Works when multiplied with ``float`` or ``int``.
@@ -74,9 +70,7 @@ The following mathematical operators can be used to calculate with the units.
 
     from pyUnitTypes.length import Meter, KiloMeter
 
-    print(KiloMeter(1) * 2.5)
-
-  prints: ``2.5 km``
+    five_kilometer = KiloMeter(2) * 2.5
 
 
 * **div (*)**: Works when divided by ``float`` or ``int``.
@@ -90,9 +84,8 @@ The following mathematical operators can be used to calculate with the units.
 
     from pyUnitTypes.length import Meter, KiloMeter
 
-    print(KiloMeter(10) / 2.5)
+    four_kilometer = KiloMeter(10) / 2.5
 
-  prints: ``4 km``
 
 Comparison Operators
 ^^^^^^^^^^^^^^^^^^^^
@@ -119,7 +112,7 @@ Besides the four basic arithmetic operators several other mathematical operation
 * ``round()``
 * ``math.ceil()``
 * ``math.floor()``
-* ``__neg__``: `'Meter(-1)`` is equal to ``-Meter(1)`
-* ``__pos__``: ``Meter(+1)`` is equal to ``+Meter(1)`
+* ``__neg__``: ``Meter(-1)`` is equal to ``-Meter(1)``
+* ``__pos__``: ``Meter(+1)`` is equal to ``+Meter(1)``
 
-All pyUnitType objects can be converted to ``int``or ``float``.
+All pyUnitType objects can be converted to ``int`` or ``float``.
