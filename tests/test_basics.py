@@ -1,7 +1,9 @@
 from unittest import TestCase
 import copy
+import math
 from pyUnitTypes.basics import BaseUnit, Conversion
 from pyUnitTypes.length import Meter, CentiMeter, MilliMeter
+from pyUnitTypes.temperature import Celsius
 
 
 class TestBaseUnit(TestCase):
@@ -11,20 +13,123 @@ class TestBaseUnit(TestCase):
     def test_general(self):
         """Test some general behaviour of the Length superclass"""
 
+        one_meter = Meter(1)
+
+        # __pos__
+        self.assertEqual(Meter(5), +Meter(5))
+
+        # __neg__
         self.assertEqual(Meter(-5), -Meter(5))
         self.assertEqual(Meter(-3.33), -Meter(3.33))
+
+        # __copy__
+        self.assertEqual(one_meter, copy.deepcopy(one_meter))
+
+        # __deepcopy__
+        self.assertEqual(one_meter, copy.copy(one_meter))
+
+    def test_type_conversions(self):
+        """Tests the conversion of types."""
+
+        # __int__
+        self.assertEqual(int(Meter(1.0)), 1)
+        self.assertEqual(int(Meter(1)), 1)
+        self.assertEqual(int(Meter(-1.0)), -1)
+        self.assertEqual(int(Meter(-1)), -1)
+        self.assertEqual(int(Meter(0)), 0)
+        self.assertEqual(int(Meter(0.0)), 0)
+
+        # __float__
+        self.assertEqual(float(Meter(1.0)), 1.0)
+        self.assertEqual(float(Meter(1)), 1.0)
+        self.assertEqual(float(Meter(-1.0)), -1.0)
+        self.assertEqual(float(Meter(-1)), -1.0)
+        self.assertEqual(float(Meter(0)), 0.0)
+        self.assertEqual(float(Meter(0.0)), 0.0)
+
+        # __nonzero__
+        self.assertTrue(bool(Meter(1)))
+        self.assertTrue(bool(Meter(-1)))
+        self.assertFalse(bool(Meter(0)))
 
     def test_eq(self):
         """Tests the equality of different length classes."""
 
-        self.assertTrue(Meter(1) == CentiMeter(100))
-        self.assertTrue(Meter(1) == MilliMeter(1000))
+        one_meter = Meter(1)
+        self.assertTrue(one_meter == Meter(1))
+        self.assertTrue(one_meter == 1)
+        self.assertTrue(one_meter == 1.0)
+        self.assertFalse(one_meter == Meter(2))
+        self.assertFalse(one_meter == CentiMeter(1))
+        self.assertFalse(one_meter == [1])
 
     def test_ne(self):
         """Tests the not equality."""
 
-        self.assertTrue(Meter(1) != Meter(2))
-        self.assertTrue(Meter(1) != CentiMeter(2))
+        one_meter = Meter(1)
+        self.assertFalse(one_meter != Meter(1))
+        self.assertFalse(one_meter != 1)
+        self.assertFalse(one_meter != 1.0)
+        self.assertTrue(one_meter != Meter(2))
+        self.assertTrue(one_meter != CentiMeter(1))
+        self.assertTrue(one_meter != [1])
+
+    def test_comparison(self):
+        """Test the <, >, <= and >= operators."""
+
+        # __lt__
+        self.assertLess(Meter(1), Meter(2))
+        self.assertLess(Meter(1), CentiMeter(101))
+        self.assertLess(Meter(1), 2)
+        self.assertLess(Meter(0), 1)
+        self.assertLess(Meter(-1), 1)
+        with self.assertRaises(TypeError):
+            a = Meter(1) < [1]
+        with self.assertRaises(TypeError):
+            a = Meter(1) < Celsius(1)
+
+        # __gt__
+        self.assertGreater(Meter(1), Meter(0.5))
+        self.assertGreater(Meter(1), CentiMeter(1))
+        self.assertGreater(Meter(1), 0.5)
+        self.assertGreater(Meter(1), 0)
+        self.assertGreater(Meter(1), -1)
+        with self.assertRaises(TypeError):
+            a = Meter(1) > [1]
+        with self.assertRaises(TypeError):
+            a = Meter(1) > Celsius(1)
+
+        # __le__
+        self.assertLessEqual(Meter(1), Meter(2))
+        self.assertLessEqual(Meter(1), Meter(1))
+        self.assertLessEqual(Meter(1), CentiMeter(101))
+        self.assertLessEqual(Meter(1), CentiMeter(100))
+        self.assertLessEqual(Meter(1), 2)
+        self.assertLessEqual(Meter(1), 1)
+        self.assertLessEqual(Meter(0), 1)
+        self.assertLessEqual(Meter(0), 0)
+        self.assertLessEqual(Meter(-1), 1)
+        self.assertLessEqual(Meter(-1), -1)
+        with self.assertRaises(TypeError):
+            a = Meter(1) <= [1]
+        with self.assertRaises(TypeError):
+            a = Meter(1) <= Celsius(1)
+
+        # __ge__
+        self.assertGreaterEqual(Meter(1), Meter(0.5))
+        self.assertGreaterEqual(Meter(1), Meter(1))
+        self.assertGreaterEqual(Meter(1), CentiMeter(1))
+        self.assertGreaterEqual(Meter(1), CentiMeter(100))
+        self.assertGreaterEqual(Meter(1), 0.5)
+        self.assertGreaterEqual(Meter(1), 1)
+        self.assertGreaterEqual(Meter(1), 0)
+        self.assertGreaterEqual(Meter(0), 0)
+        self.assertGreaterEqual(Meter(-1), -1)
+        self.assertGreaterEqual(Meter(1), -1)
+        with self.assertRaises(TypeError):
+            a = Meter(1) >= [1]
+        with self.assertRaises(TypeError):
+            a = Meter(1) >= Celsius(1)
 
     def test_add(self):
         """Test the addition."""
@@ -47,7 +152,26 @@ class TestBaseUnit(TestCase):
         self.assertEqual(Meter(0) + 4.5, Meter(4.5))
         self.assertEqual(0 + Meter(2), Meter(2))
 
+        # other unit of the same unit base type
+        meter = Meter(0)
+        self.assertEqual(Meter(1) + CentiMeter(100), 2)
+        self.assertEqual(2, Meter(1) + CentiMeter(100))
+
+        # __iadd__
+        meter += 1
+        self.assertEqual(meter, 1)
+        meter += 0
+        self.assertEqual(meter, 1)
+        meter += CentiMeter(100)
+        self.assertEqual(meter, 2)
+
         # unsupported Types
+        with self.assertRaises(TypeError):
+            a = Meter(1) + Celsius(1)
+        with self.assertRaises(TypeError):
+            meter += Celsius(1)
+        with self.assertRaises(TypeError):
+            a = '1' + Meter(1)
         with self.assertRaises(TypeError):
             a = Meter(1) + '1'
         with self.assertRaises(TypeError):
@@ -76,7 +200,26 @@ class TestBaseUnit(TestCase):
         self.assertEqual(Meter(0) - 4.5, Meter(-4.5))
         self.assertEqual(0 - Meter(2), Meter(-2))
 
+        # other unit of the same unit base type
+        meter = Meter(0)
+        self.assertEqual(Meter(1) - CentiMeter(100), 0)
+        self.assertEqual(0, Meter(1) - CentiMeter(100))
+
+        # __isub__
+        meter -= 1
+        self.assertEqual(meter, -1)
+        meter -= 0
+        self.assertEqual(meter, -1)
+        meter -= CentiMeter(100)
+        self.assertEqual(meter, -2)
+
         # unsupported Types
+        with self.assertRaises(TypeError):
+            a = Meter(1) - Celsius(1)
+        with self.assertRaises(TypeError):
+            meter -= Celsius(1)
+        with self.assertRaises(TypeError):
+            a = '1' - Meter(1)
         with self.assertRaises(TypeError):
             a = Meter(1) - '1'
         with self.assertRaises(TypeError):
@@ -129,9 +272,59 @@ class TestBaseUnit(TestCase):
         with self.assertRaises(ZeroDivisionError):
             self.assertEqual(Meter(21) / 0, Meter(7))
 
+    def test_round(self):
+        """Tests the round(), math.floor() and math.ceil() functionality."""
+
+        # __round__
+        self.assertEqual(Meter(1), round(Meter(1.3)))
+        self.assertEqual(Meter(2), round(Meter(1.5)))
+        self.assertEqual(Meter(2), round(Meter(1.6)))
+        self.assertEqual(Meter(-1), round(Meter(-1.3)))
+        self.assertEqual(Meter(-2), round(Meter(-1.5)))
+        self.assertEqual(Meter(-2), round(Meter(-1.6)))
+
+        # __floor__
+        self.assertEqual(Meter(1), math.floor(Meter(1.3)))
+        self.assertEqual(Meter(1), math.floor(Meter(1.5)))
+        self.assertEqual(Meter(1), math.floor(Meter(1.6)))
+        self.assertEqual(Meter(-2), math.floor(Meter(-1.3)))
+        self.assertEqual(Meter(-2), math.floor(Meter(-1.5)))
+        self.assertEqual(Meter(-2), math.floor(Meter(-1.6)))
+
+        # __ceil__
+        self.assertEqual(Meter(2), math.ceil(Meter(1.3)))
+        self.assertEqual(Meter(2), math.ceil(Meter(1.5)))
+        self.assertEqual(Meter(2), math.ceil(Meter(1.6)))
+        self.assertEqual(Meter(-1), math.ceil(Meter(-1.3)))
+        self.assertEqual(Meter(-1), math.ceil(Meter(-1.5)))
+        self.assertEqual(Meter(-1), math.ceil(Meter(-1.6)))
+
 
 class TestConversion(TestCase):
     """Tests the Conversion class."""
+
+    def test_general(self):
+        """Test some general behaviour of the Length superclass"""
+
+        conv = Conversion(factor=2, offset=3)
+
+        # __eq__
+        self.assertTrue(conv == Conversion(factor=2, offset=3))
+        self.assertFalse(conv == Conversion(factor=1, offset=3))
+        self.assertFalse(conv == Conversion(factor=2, offset=2))
+        self.assertFalse(conv == 1)
+
+        # __ne__
+        self.assertFalse(conv != Conversion(factor=2, offset=3))
+        self.assertTrue(conv != Conversion(factor=1, offset=3))
+        self.assertTrue(conv != Conversion(factor=2, offset=2))
+        self.assertTrue(conv != 1)
+
+        # __copy__
+        self.assertEqual(conv, copy.deepcopy(conv))
+
+        # __deeepcopy__
+        self.assertEqual(conv, copy.copy(conv))
 
     def test_convert(self):
         """Tests the convert method."""

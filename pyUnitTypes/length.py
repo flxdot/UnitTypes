@@ -31,6 +31,16 @@ class Length(BaseUnit):
             raise TypeError('Can not create object of type {0} from object of type {1}'.format(type(self).__name__,
                                                                                                type(value).__name__))
 
+class KiloMeter(Length):
+    """Larger distances in SI units."""
+
+    def __init__(self, value=float()):
+        """Create instance of the meter class.
+
+        :param value: (optional, int or float
+        """
+
+        super().__init__(name='KiloMeter', symbol='km', to_base=Conversion(1e3), value=value)
 
 class Meter(Length):
     """The base SI unit of lengths."""
@@ -43,6 +53,17 @@ class Meter(Length):
 
         super().__init__(name='Meter', symbol='m', to_base=Conversion(), value=value)
 
+class DeciMeter(Length):
+    """The measurement only carpenters use."""
+
+    def __init__(self, value=float()):
+        """Create instance of the meter class.
+
+        :param value: (optional, int or float
+        """
+
+        super().__init__(name='DeciMeter', symbol='dm', to_base=Conversion(1e-1), value=value)
+
 
 class CentiMeter(Length):
     """The measurement only carpenters use."""
@@ -53,11 +74,11 @@ class CentiMeter(Length):
         :param value: (optional, int or float
         """
 
-        super().__init__(name='CentiMeter', symbol='cm', to_base=Conversion(0.01), value=value)
+        super().__init__(name='CentiMeter', symbol='cm', to_base=Conversion(1e-2), value=value)
 
 
 class MilliMeter(Length):
-    """."""
+    """The unit for every one building something from metal"""
 
     def __init__(self, value=float()):
         """Create instance of the meter class.
@@ -65,4 +86,28 @@ class MilliMeter(Length):
         :param value: (optional, int or float
         """
 
-        super().__init__(name='CentiMeter', symbol='cm', to_base=Conversion(0.001), value=value)
+        super().__init__(name='MilliMeter', symbol='mm', to_base=Conversion(1e-3), value=value)
+
+
+class MicroMeter(Length):
+    """That's small."""
+
+    def __init__(self, value=float()):
+        """Create instance of the meter class.
+
+        :param value: (optional, int or float
+        """
+
+        super().__init__(name='MicroMeter', symbol='μm', to_base=Conversion(1e-6), value=value)
+
+
+class NanoMeter(Length):
+    """That's so small that light color changes with it."""
+
+    def __init__(self, value=float()):
+        """Create instance of the meter class.
+
+        :param value: (optional, int or float
+        """
+
+        super().__init__(name='NanoMeter', symbol='nm', to_base=Conversion(1e-9), value=value)

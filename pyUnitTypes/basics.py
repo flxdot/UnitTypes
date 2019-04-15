@@ -52,6 +52,22 @@ class Conversion:
 
         return self.factor * float(val) + self.offset
 
+    def __eq__(self, other):
+        """Defines behavior for the equality operator, ==."""
+
+        if isinstance(other, Conversion):
+            return self.factor == other.factor and self.offset == other.offset
+        else:
+            return False
+
+    def __ne__(self, other):
+        """Defines behavior for the inequality operator, !=."""
+
+        if isinstance(other, Conversion):
+            return self.factor != other.factor or self.offset != other.offset
+        else:
+            return True
+
     def __copy__(self):
         """Defines behavior for copy.copy() for instances of your class. copy.copy() returns a shallow copy of your
         object -- this means that, while the instance itself is a new instance, all of its data is referenced
@@ -79,8 +95,11 @@ class Conversion:
             self.offset = -self.offset
         return self
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return "Conversion(factor={0}, offset={1})".format(self.factor, self.offset)
+
+    def __str__(self):  # pragma: no cover
+        return "y = {0} * x + {1}".format(self.factor, self.factor)
 
 
 class BaseUnit:
@@ -117,10 +136,10 @@ class BaseUnit:
             self._from_base_converter = copy.copy(to_base).__invert__()
         self.from_base = self._from_base_converter.convert
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return "{0} {1}".format(self.value, self.symbol)
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "{0} {1}".format(self.value, self.symbol)
 
     def __pos__(self):
@@ -246,6 +265,12 @@ class BaseUnit:
 
         return bool(self.value)
 
+    def __bool__(self):
+        """Defines behavior for when bool() is called on an instance of your class. Should return True or False,
+        depending on whether you would want to consider the instance to be True or False."""
+
+        return bool(self.value)
+
     def __add__(self, other):
         """Implements addition."""
 
@@ -275,12 +300,14 @@ class BaseUnit:
         # check input
         if isinstance(other, (int, float)):
             self.value += other
+            return self
         elif issubclass(type(other), BaseUnit):
             # check if both operands are of the same unit type, because can not add meters to degrees celsius
             if self._type != other.type:
                 raise TypeError('Can not add {0} to {1}.'.format(other.type, self._type))
 
             self.value = self.from_base(self._base_value + other.base_value)
+            return self
         else:
             raise TypeError('Can not add objects of type {0} to object of type {1}'.format(type(other).__name__,
                                                                                            type(self).__name__))
@@ -327,12 +354,14 @@ class BaseUnit:
         # check input
         if isinstance(other, (int, float)):
             self.value -= other
+            return self
         elif issubclass(type(other), BaseUnit):
             # check if both operands are of the same unit type, because can not add meters to degrees celsius
             if self._type != other.type:
                 raise TypeError('Can not subtract {0} from {1}.'.format(other.type, self._type))
 
             self.value = self.from_base(self._base_value - other.base_value)
+            return self
         else:
             raise TypeError('Can not subtract objects of type {0} from object of type {1}'.format(type(other).__name__,
                                                                                                   type(self).__name__))
