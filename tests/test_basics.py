@@ -1,7 +1,7 @@
 from unittest import TestCase
 import copy
 import math
-from pyUnitTypes.basics import BaseUnit, Conversion
+from pyUnitTypes.basics import Conversion, UnknownUnitMultiplicationError, UnknownUnitDivisionError
 from pyUnitTypes.length import Meter, CentiMeter, MilliMeter
 from pyUnitTypes.temperature import Celsius
 
@@ -47,10 +47,15 @@ class TestBaseUnit(TestCase):
         self.assertEqual(float(Meter(0)), 0.0)
         self.assertEqual(float(Meter(0.0)), 0.0)
 
-        # __nonzero__
+        # __bool__
         self.assertTrue(bool(Meter(1)))
         self.assertTrue(bool(Meter(-1)))
         self.assertFalse(bool(Meter(0)))
+
+        # __nonzero__
+        self.assertTrue(Meter(1).__nonzero__())
+        self.assertTrue(Meter(-1).__nonzero__())
+        self.assertFalse(Meter(0).__nonzero__())
 
     def test_eq(self):
         """Tests the equality of different length classes."""
@@ -171,6 +176,8 @@ class TestBaseUnit(TestCase):
         with self.assertRaises(TypeError):
             meter += Celsius(1)
         with self.assertRaises(TypeError):
+            meter += '1'
+        with self.assertRaises(TypeError):
             a = '1' + Meter(1)
         with self.assertRaises(TypeError):
             a = Meter(1) + '1'
@@ -219,6 +226,8 @@ class TestBaseUnit(TestCase):
         with self.assertRaises(TypeError):
             meter -= Celsius(1)
         with self.assertRaises(TypeError):
+            meter -= '1'
+        with self.assertRaises(TypeError):
             a = '1' - Meter(1)
         with self.assertRaises(TypeError):
             a = Meter(1) - '1'
@@ -248,13 +257,30 @@ class TestBaseUnit(TestCase):
         self.assertEqual(Meter(0) * 4.5, Meter(0))
         self.assertEqual(0 * Meter(2), Meter(0))
 
+        # __imul__
+        meter = Meter(1)
+        meter *= 2
+        self.assertEqual(meter,  2)
+        meter *= -1
+        self.assertEqual(meter,  -2)
+        meter *= 0
+        self.assertEqual(meter,  0)
+
         # unsupported Types
+        with self.assertRaises(UnknownUnitMultiplicationError):
+            a = Meter(1) * Celsius(1)
+        with self.assertRaises(UnknownUnitMultiplicationError):
+            meter *= Celsius(1)
+        with self.assertRaises(TypeError):
+            a = '1' * Meter(1)
         with self.assertRaises(TypeError):
             a = Meter(1) * '1'
         with self.assertRaises(TypeError):
             a = Meter(1) * [1]
         with self.assertRaises(TypeError):
             a = Meter(1) * {'value': 1}
+        with self.assertRaises(TypeError):
+            meter *= '1'
 
         # unsupported Units
 
@@ -269,8 +295,34 @@ class TestBaseUnit(TestCase):
         self.assertEqual(Meter(0) / -3.5, Meter(0))
         self.assertEqual(Meter(0) / 3.5, Meter(0))
 
+        # __idiv__
+        meter = Meter(1)
+        meter /= 2
+        self.assertEqual(meter,  0.5)
+        meter /= -1
+        self.assertEqual(meter,  -0.5)
+
+        # zero division error
         with self.assertRaises(ZeroDivisionError):
-            self.assertEqual(Meter(21) / 0, Meter(7))
+            a = Meter(21) / 0
+        with self.assertRaises(ZeroDivisionError):
+            meter /= 0
+
+        # unsupported Types
+        with self.assertRaises(UnknownUnitDivisionError):
+            a = Meter(1) /Celsius(1)
+        with self.assertRaises(UnknownUnitDivisionError):
+            meter /= Celsius(1)
+        with self.assertRaises(UnknownUnitDivisionError):
+            a = '1' / Meter(1)
+        with self.assertRaises(TypeError):
+            a = Meter(1) / '1'
+        with self.assertRaises(TypeError):
+            a = Meter(1) / [1]
+        with self.assertRaises(TypeError):
+            a = Meter(1) / {'value': 1}
+        with self.assertRaises(TypeError):
+            meter /= '1'
 
     def test_round(self):
         """Tests the round(), math.floor() and math.ceil() functionality."""
@@ -282,6 +334,9 @@ class TestBaseUnit(TestCase):
         self.assertEqual(Meter(-1), round(Meter(-1.3)))
         self.assertEqual(Meter(-2), round(Meter(-1.5)))
         self.assertEqual(Meter(-2), round(Meter(-1.6)))
+        self.assertEqual(Meter(1.3), round(Meter(1.33), 1))
+        self.assertEqual(Meter(1.4), round(Meter(1.35), 1))
+        self.assertEqual(Meter(1.4), round(Meter(1.36), 1))
 
         # __floor__
         self.assertEqual(Meter(1), math.floor(Meter(1.3)))

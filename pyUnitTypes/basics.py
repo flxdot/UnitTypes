@@ -30,6 +30,18 @@ class ComplexTypes(Enum):
     WORK = 6
 
 
+class UnknownUnitMultiplicationError(Exception):
+    """Will be raised by BaseUnit when ever 2 units are multiplied with each other. This needs to be handled in the
+    sub classes."""
+    pass
+
+
+class UnknownUnitDivisionError(Exception):
+    """Will be raised by BaseUnit when ever 2 units are divided by each other. This needs to be handled in the
+    sub classes."""
+    pass
+
+
 class Conversion:
     """The Conversion class defines a conversion from one value to another."""
 
@@ -184,7 +196,8 @@ class BaseUnit:
             if issubclass(type(other), BaseUnit):
                 raise TypeError('Can not compare Unit {0} to Unit {1}'.format(self.name, type(other).__name__))
             else:
-                raise TypeError('Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
+                raise TypeError(
+                    'Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
 
     def __gt__(self, other):
         """Defines behavior for the greater-than operator, >."""
@@ -197,7 +210,8 @@ class BaseUnit:
             if issubclass(type(other), BaseUnit):
                 raise TypeError('Can not compare Unit {0} to Unit {1}'.format(self.name, type(other).__name__))
             else:
-                raise TypeError('Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
+                raise TypeError(
+                    'Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
 
     def __le__(self, other):
         """Defines behavior for the less-than-or-equal-to operator, <=."""
@@ -210,7 +224,8 @@ class BaseUnit:
             if issubclass(type(other), BaseUnit):
                 raise TypeError('Can not compare Unit {0} to Unit {1}'.format(self.name, type(other).__name__))
             else:
-                raise TypeError('Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
+                raise TypeError(
+                    'Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
 
     def __ge__(self, other):
         """Defines behavior for the greater-than-or-equal-to operator, >=."""
@@ -223,7 +238,8 @@ class BaseUnit:
             if issubclass(type(other), BaseUnit):
                 raise TypeError('Can not compare Unit {0} to Unit {1}'.format(self.name, type(other).__name__))
             else:
-                raise TypeError('Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
+                raise TypeError(
+                    'Can not compare Unit {0} to object of type {1}'.format(self.name, type(other).__name__))
 
     def __abs__(self):
         """Implements behavior for the built in abs() function."""
@@ -234,7 +250,10 @@ class BaseUnit:
     def __round__(self, n=None):
         """Implements behavior for the built in round() function. n is the number of decimal places to round to."""
 
-        self.value = round(self.value, ndigits=n)
+        if n is not None:
+            self.value = round(self.value, ndigits=n)
+        else:
+            self.value = round(self.value)
         return self
 
     def __floor__(self):
@@ -337,7 +356,7 @@ class BaseUnit:
         if isinstance(other, (int, float)):
             self.value = other - self.value
             return self
-        elif issubclass(type(other), BaseUnit):
+        elif issubclass(type(other), BaseUnit):  # pragma: no cover
             # check if both operands are of the same unit type, because can not add meters to degrees celsius
             if self._type != other.type:
                 raise TypeError('Can not subtract {0} from {1}.'.format(other.type, self._type))
@@ -372,21 +391,30 @@ class BaseUnit:
         if isinstance(other, (float, int)):
             self.value *= other
             return self
-        elif issubclass(type(other), self.type):
-            self.value = self.from_base.convert(self._base_value * other.base_value)
-            return self
+        elif issubclass(type(other), BaseUnit):
+            raise UnknownUnitMultiplicationError('So far the multiplication of {0} by {1} is unknown.', self.name,
+                                                 other.name)
         else:
-            if issubclass(type(other), BaseUnit):
-                raise NotImplementedError(
-                    'No method to multiply unit {0} with unit {1} implemented.'.format(self.name, other.name))
-            else:
-                raise TypeError(
-                    'Can not multiply Unit {0} with object of type {1}'.format(self.name, type(other).__name__))
+            raise TypeError(
+                'Can not multiply Unit {0} with object of type {1}'.format(self.name, type(other).__name__))
 
     def __rmul__(self, other):
         """Implements reflected multiplication."""
 
         return self * other
+
+    def __imul__(self, other):
+        """Implements multiplication."""
+
+        if isinstance(other, (float, int)):
+            self.value *= other
+            return self
+        elif issubclass(type(other), BaseUnit):
+            raise UnknownUnitMultiplicationError('So far the multiplication of {0} by {1} is unknown.', self.name,
+                                                 other.name)
+        else:
+            raise TypeError(
+                'Can not multiply Unit {0} with object of type {1}'.format(self.name, type(other).__name__))
 
     def __div__(self, other):
         """Implements division using the / operator."""
@@ -394,16 +422,12 @@ class BaseUnit:
         if isinstance(other, (float, int)):
             self.value /= other
             return self
-        elif issubclass(type(other), self.type):
-            self.value = self.from_base.convert(self._base_value * other.base_value)
-            return self
+        elif issubclass(type(other), BaseUnit):
+            raise UnknownUnitDivisionError('So far the division of {0} by {1} is unknown.', self.name,
+                                           other.name)
         else:
-            if issubclass(type(other), BaseUnit):
-                raise NotImplementedError(
-                    'No method to divide unit {0} with unit {1} implemented.'.format(self.name, other.name))
-            else:
-                raise TypeError(
-                    'Can not divide Unit {0} by object of type {1}'.format(self.name, type(other).__name__))
+            raise TypeError(
+                'Can not divide Unit {0} by object of type {1}'.format(self.name, type(other).__name__))
 
     def __truediv__(self, other):
         """Implements true division. Note that this only works when from __future__ import division is in effect."""
@@ -413,7 +437,7 @@ class BaseUnit:
     def __rdiv__(self, other):
         """Implements reflected division using the / operator."""
 
-        raise NotImplementedError('No method to divide by unit {0} has been implemented.'.format(self.name))
+        raise UnknownUnitDivisionError('No method to divide by unit {0} has been implemented.'.format(self.name))
 
     def __rtruediv__(self, other):
         """Implements reflected true division. Note that this only works when from __future__ import division is in
@@ -421,35 +445,24 @@ class BaseUnit:
 
         return self.__rdiv__(other)
 
-    def __imul__(self, other):
-        """Implements multiplication."""
-
-        if isinstance(other, (float, int)):
-            self.value *= other
-        elif issubclass(type(other), self.type):
-            self.value = self.from_base.convert(self._base_value * other.base_value)
-        else:
-            if issubclass(type(other), BaseUnit):
-                raise NotImplementedError(
-                    'No method to multiply unit {0} with unit {1} implemented.'.format(self.name, other.name))
-            else:
-                raise NotImplementedError(
-                    'Can not multiply Unit {0} with object of type {1}'.format(self.name, type(other).__name__))
-
     def __idiv__(self, other):
         """Implements division using the / operator."""
 
         if isinstance(other, (float, int)):
             self.value /= other
-        elif issubclass(type(other), self.type):
-            self.value = self.from_base.convert(self._base_value / other.base_value)
+            return self
+        elif issubclass(type(other), BaseUnit):
+            raise UnknownUnitDivisionError('So far the division of {0} by {1} is unknown.', self.name,
+                                           other.name)
         else:
-            if issubclass(type(other), BaseUnit):
-                raise NotImplementedError(
-                    'No method to divide unit {0} by unit {1} implemented.'.format(self.name, other.name))
-            else:
-                raise NotImplementedError(
-                    'Can not divide Unit {0} by object of type {1}'.format(self.name, type(other).__name__))
+            raise TypeError(
+                'Can not divide Unit {0} by object of type {1}'.format(self.name, type(other).__name__))
+
+    def __itruediv__(self, other):
+        """Implements true division with assignment. Note that this only works when from __future__ import division is
+        in effect."""
+
+        return self.__idiv__(other)
 
     @property
     def value(self):
