@@ -33,8 +33,3 @@ class TestTemperature(TestCase):
         self.assertAlmostEqual(Kelvin(100), Fahrenheit(-279.67), places=prec)
         self.assertAlmostEqual(Fahrenheit(100), Celsius(37.77778), places=prec)
         self.assertAlmostEqual(Fahrenheit(100), Kelvin(310.9278), places=prec)
-
-        # negative values
-
-        # 0 values
-

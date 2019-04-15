@@ -34,7 +34,7 @@ class Temperature(BaseUnit):
 
 
 class Celsius(Temperature):
-    """Celcius: 0°C is at water freezing at sea level and 100°C is boiling temperature of water at sea level."""
+    """Celsius: 0°C is at water freezing at sea level and 100°C is boiling temperature of water at sea level."""
 
     def __init__(self, value=float()):
         """Create instance of the kelvin class.

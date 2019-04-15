@@ -31,6 +31,7 @@ class Length(BaseUnit):
             raise TypeError('Can not create object of type {0} from object of type {1}'.format(type(self).__name__,
                                                                                                type(value).__name__))
 
+
 class KiloMeter(Length):
     """Larger distances in SI units."""
 
@@ -42,6 +43,7 @@ class KiloMeter(Length):
 
         super().__init__(name='KiloMeter', symbol='km', to_base=Conversion(1e3), value=value)
 
+
 class Meter(Length):
     """The base SI unit of lengths."""
 
@@ -52,6 +54,7 @@ class Meter(Length):
         """
 
         super().__init__(name='Meter', symbol='m', to_base=Conversion(), value=value)
+
 
 class DeciMeter(Length):
     """The measurement only carpenters use."""
@@ -111,3 +114,51 @@ class NanoMeter(Length):
         """
 
         super().__init__(name='NanoMeter', symbol='nm', to_base=Conversion(1e-9), value=value)
+
+
+class Mile(Length):
+    """Distances on US highways"""
+
+    def __init__(self, value=float()):
+        """Create instance of the meter class.
+
+        :param value: (optional, int or float
+        """
+
+        super().__init__(name='Mile', symbol='Mi', to_base=Conversion(1609.344), value=value)
+
+
+class Yard(Length):
+    """If your a golfer you'll know."""
+
+    def __init__(self, value=float()):
+        """Create instance of the meter class.
+
+        :param value: (optional, int or float
+        """
+
+        super().__init__(name='Yard', symbol='yrd', to_base=Conversion(0.914399909), value=value)
+
+
+class Feet(Length):
+    """If your a golfer you'll know."""
+
+    def __init__(self, value=float()):
+        """Create instance of the meter class.
+
+        :param value: (optional, int or float
+        """
+
+        super().__init__(name='Feet', symbol='ft', to_base=Conversion(0.3048), value=value)
+
+
+class Inch(Length):
+    """if it's smaller than your feet its measured in inch.."""
+
+    def __init__(self, value=float()):
+        """Create instance of the meter class.
+
+        :param value: (optional, int or float
+        """
+
+        super().__init__(name='Inch', symbol='inch', to_base=Conversion(0.0254), value=value)
