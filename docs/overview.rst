@@ -1,8 +1,11 @@
 Overview
 ========
 
-This package is designed to easily work with different units. The main usage is to display different units and unit
-systems in FrontEnds. **Warning: It should never be used to make precise calculations, since the accuracy is
+This package is designed to easily work with physical units. The main usage is to display different units and unit
+systems in FrontEnds. Typical use case would be: Your application make it's calculation in SI units and then you'll need
+to deploy your application in the US. So instead of display temperatures in °C you'll now have to display it in °F.
+
+**Warning: It should never be used to make precise calculations, since the accuracy is
 limited to 3-4 digits at the moment. Especially when converting SI units to imperial units.**
 
 Converting your first value
@@ -34,8 +37,11 @@ Calculating with units
 
 Calculation with unit values is as easy as normal calculation. Sofar following operators are implemented:
 
-Operators
-^^^^^^^^^
+Arithmetic Operators
+^^^^^^^^^^^^^^^^^^^^
+
+The following mathematical operators can be used to calculate with the units.
+
 * **add (+)**: Works as within a UnitType package. Raises a TypeError if Units from different modules are used.
 
   .. code-block:: python
@@ -45,6 +51,7 @@ Operators
     print(Meter(1000) + KiloMeter(1))
 
   prints: ``2.0 km``
+
 
 * **sub (-)**: Works as within a UnitType package. Raises a TypeError if Units from different modules are used.
 
@@ -56,9 +63,11 @@ Operators
 
   prints: ``0.75 km``
 
+
 * **mul (*)**: Works when multiplied with ``float`` or ``int``.
 
   Raises ``pyUnitTypes.basics.UnknownUnitMultiplicationError`` when multiplication of the two units has not been implemented
+
   Raises ``TypeError`` if multiplied with objects which are not inherited from ``pUnitTypes.basics.BaseUnit``.
 
   .. code-block:: python
@@ -69,10 +78,12 @@ Operators
 
   prints: ``2.5 km``
 
+
 * **div (*)**: Works when divided by ``float`` or ``int``.
 
   Raises ``pyUnitTypes.basics.UnknownUnitDivisionError`` when divided of the two units has not been implemented or
   if division of ``float`` or `´int`` by the unit is not implemented.
+
   Raises ``TypeError`` if multiplied with objects which are not inherited from ``pUnitTypes.basics.BaseUnit``.
 
   .. code-block:: python
@@ -83,4 +94,32 @@ Operators
 
   prints: ``4 km``
 
+Comparison Operators
+^^^^^^^^^^^^^^^^^^^^
 
+Any pyUnitTypes object can be compared to another object from the same module. Comparing to a object of a different
+package or any other object will raise as ``TypeError``.
+
+.. code-block:: python
+
+  from pyUnitTypes.length import Meter, KiloMeter
+
+  is_eq = Meter(1000) == KiloMeter(1)
+  is_ne = Meter(0) != KiloMeter(1)
+  is_lt = Meter(1) < KiloMeter(1)
+  is_gt = Meter(2000) > KiloMeter(1)
+  is_le = Meter(1000) >= KiloMeter(1)
+  is_ge = Meter(1000) <= KiloMeter(1)
+
+Other numeric functionality
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Besides the four basic arithmetic operators several other mathematical operations are supported:
+
+* ``round()``
+* ``math.ceil()``
+* ``math.floor()``
+* ``__neg__``: `'Meter(-1)`` is equal to ``-Meter(1)`
+* ``__pos__``: ``Meter(+1)`` is equal to ``+Meter(1)`
+
+All pyUnitType objects can be converted to ``int``or ``float``.
