@@ -2,7 +2,9 @@ Time
 ====
 
 Module: ``pyUnitTypes.time``
+
 ModuleSuperclass: ``pyUnitTypes.time.Time``
+
 BaseUnit: ``pyUnitTypes.time.Day``
 
 Available Units

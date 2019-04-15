@@ -2,7 +2,9 @@ Mass
 ====
 
 Module: ``pyUnitTypes.mass``
+
 ModuleSuperclass: ``pyUnitTypes.mass.Mass``
+
 BaseUnit: ``pyUnitTypes.mass.KiloGram``
 
 Available Units
