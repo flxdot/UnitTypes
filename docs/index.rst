@@ -9,8 +9,4 @@ Contents
    overview
    base-units
    composite-units
-
-Index
-==================
-
-* :ref:`genindex`
+   own-units
