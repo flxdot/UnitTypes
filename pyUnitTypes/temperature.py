@@ -1,4 +1,3 @@
-import copy
 from pyUnitTypes.basics import BaseUnit, Conversion
 
 
@@ -66,5 +65,5 @@ class Fahrenheit(Temperature):
         :param value: (optional, int or float)
         """
 
-        super().__init__(name='Fahrenheit', symbol='°F', to_base=Conversion(5/9, -160/9),
+        super().__init__(name='Fahrenheit', symbol='°F', to_base=Conversion(5 / 9, -160 / 9),
                          from_base=Conversion(1.8, 32), value=value)

@@ -1,6 +1,6 @@
-from enum import Enum
-import math
 import copy
+import math
+from enum import Enum
 
 
 class System(Enum):

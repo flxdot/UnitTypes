@@ -75,8 +75,8 @@ The following mathematical operators can be used to calculate with the units.
 
 * **div (*)**: Works when divided by ``float`` or ``int``.
 
-  Raises ``pyUnitTypes.basics.UnknownUnitDivisionError`` when divided of the two units has not been implemented or
-  if division of ``float`` or `´int`` by the unit is not implemented.
+  Raises ``pyUnitTypes.basics.UnknownUnitDivisionError`` when division of the two units has not been implemented or
+  if division of ``float`` or ``int`` by the unit is not implemented.
 
   Raises ``TypeError`` if multiplied with objects which are not inherited from ``pUnitTypes.basics.BaseUnit``.
 

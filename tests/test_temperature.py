@@ -1,5 +1,7 @@
 from unittest import TestCase
+
 from pyUnitTypes.temperature import Kelvin, Celsius, Fahrenheit
+
 
 class TestTemperature(TestCase):
     """Tests the Temperature module."""

@@ -77,7 +77,7 @@ class Hour(Time):
         :param value: (optional, int or float) the amount of years
         """
 
-        super().__init__(name='Hour', symbol='h', to_base=Conversion(1/24), value=value)
+        super().__init__(name='Hour', symbol='h', to_base=Conversion(1 / 24), value=value)
 
 
 class Minute(Time):
@@ -89,7 +89,7 @@ class Minute(Time):
         :param value: (optional, int or float) the amount of years
         """
 
-        super().__init__(name='Minute', symbol='min', to_base=Conversion(1/1440), value=value)
+        super().__init__(name='Minute', symbol='min', to_base=Conversion(1 / 1440), value=value)
 
 
 class Second(Time):
@@ -101,7 +101,7 @@ class Second(Time):
         :param value: (optional, int or float) the amount of years
         """
 
-        super().__init__(name='Seconds', symbol='s', to_base=Conversion(1/86400), value=value)
+        super().__init__(name='Seconds', symbol='s', to_base=Conversion(1 / 86400), value=value)
 
 
 class MilliSecond(Time):
@@ -113,7 +113,7 @@ class MilliSecond(Time):
         :param value: (optional, int or float) the amount of years
         """
 
-        super().__init__(name='MilliSecond', symbol='ms', to_base=Conversion(1/86400000), value=value)
+        super().__init__(name='MilliSecond', symbol='ms', to_base=Conversion(1 / 86400000), value=value)
 
 
 class MicroSecond(Time):
@@ -126,4 +126,4 @@ class MicroSecond(Time):
         :param value: (optional, int or float) the amount of years
         """
 
-        super().__init__(name='MicroSecond', symbol='μs', to_base=Conversion(1/86400000000), value=value)
+        super().__init__(name='MicroSecond', symbol='μs', to_base=Conversion(1 / 86400000000), value=value)

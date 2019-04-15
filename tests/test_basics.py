@@ -1,8 +1,9 @@
-from unittest import TestCase
 import copy
 import math
+from unittest import TestCase
+
 from pyUnitTypes.basics import Conversion, UnknownUnitMultiplicationError, UnknownUnitDivisionError
-from pyUnitTypes.length import Meter, CentiMeter, MilliMeter
+from pyUnitTypes.length import Meter, CentiMeter
 from pyUnitTypes.temperature import Celsius
 
 
@@ -260,11 +261,11 @@ class TestBaseUnit(TestCase):
         # __imul__
         meter = Meter(1)
         meter *= 2
-        self.assertEqual(meter,  2)
+        self.assertEqual(meter, 2)
         meter *= -1
-        self.assertEqual(meter,  -2)
+        self.assertEqual(meter, -2)
         meter *= 0
-        self.assertEqual(meter,  0)
+        self.assertEqual(meter, 0)
 
         # unsupported Types
         with self.assertRaises(UnknownUnitMultiplicationError):
@@ -298,9 +299,9 @@ class TestBaseUnit(TestCase):
         # __idiv__
         meter = Meter(1)
         meter /= 2
-        self.assertEqual(meter,  0.5)
+        self.assertEqual(meter, 0.5)
         meter /= -1
-        self.assertEqual(meter,  -0.5)
+        self.assertEqual(meter, -0.5)
 
         # zero division error
         with self.assertRaises(ZeroDivisionError):
@@ -310,7 +311,7 @@ class TestBaseUnit(TestCase):
 
         # unsupported Types
         with self.assertRaises(UnknownUnitDivisionError):
-            a = Meter(1) /Celsius(1)
+            a = Meter(1) / Celsius(1)
         with self.assertRaises(UnknownUnitDivisionError):
             meter /= Celsius(1)
         with self.assertRaises(UnknownUnitDivisionError):
@@ -447,8 +448,8 @@ class TestConversion(TestCase):
         conv = Conversion(factor=2, offset=3)
         conv_inv = copy.copy(conv).__invert__()
 
-        self.assertEqual(conv_inv.factor, 1/conv.factor)
-        self.assertEqual(conv_inv.offset, -conv.offset/conv.factor)
+        self.assertEqual(conv_inv.factor, 1 / conv.factor)
+        self.assertEqual(conv_inv.offset, -conv.offset / conv.factor)
 
         # zero factpr
         conv = Conversion(factor=0, offset=1)
@@ -461,6 +462,5 @@ class TestConversion(TestCase):
         conv = Conversion(factor=2, offset=0)
         conv_inv = copy.copy(conv).__invert__()
 
-        self.assertEqual(conv_inv.factor, 1/conv.factor)
+        self.assertEqual(conv_inv.factor, 1 / conv.factor)
         self.assertEqual(conv_inv.offset, 0)
-
