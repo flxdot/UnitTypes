@@ -53,7 +53,8 @@ for name, symbol, base10 in SI_PREFIXES:
     class_name = '{}Ampere'.format(name)
 
     # generate the new class
-    generatedClass = class_factory(BaseClass=Current, name=class_name, symbol=symbol, to_base=Conversion(base10))
+    generatedClass = class_factory(BaseClass=Current, name='{}A'.format(symbol), symbol=symbol,
+                                   to_base=Conversion(base10))
     # register the class to the module
     globals()[generatedClass.__name__] = generatedClass
     # get rid of the temporary stuff

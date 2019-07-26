@@ -1,3 +1,4 @@
+import sys
 from pyUnitTypes.basics import BaseUnit, Conversion, SI_PREFIXES
 from pyUnitTypes.auxiliary import class_factory
 
@@ -121,13 +122,14 @@ class ShortTon(Mass):
 for name, symbol, base10 in SI_PREFIXES:
     if name == 'Kilo':
         continue
-    class_name = '{}Meter'.format(name)
+    class_name = '{}Gram'.format(name)
 
     # account for the fact that kilogram is the base unit of the mass
     base10 /= 1e3
 
     # generate the new class
-    generatedClass = class_factory(BaseClass=Mass, name=class_name, symbol=symbol, to_base=Conversion(base10))
+    generatedClass = class_factory(BaseClass=Mass, name=class_name, symbol='{}g'.format(symbol),
+                                   to_base=Conversion(base10))
     # register the class to the module
     globals()[generatedClass.__name__] = generatedClass
     # get rid of the temporary stuff
