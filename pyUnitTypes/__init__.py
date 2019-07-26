@@ -1,4 +1,4 @@
-from pathlib import Path
+import os
 import sys
 import inspect
 import pkgutil
@@ -6,7 +6,7 @@ from importlib import import_module
 
 # make sure to add all dynamically created classes to the modules
 # found at: https://www.bnmetrics.com/blog/dynamic-import-in-python3
-for (_, name, _) in pkgutil.iter_modules([Path(__file__).parent]):
+for (_, name, _) in pkgutil.iter_modules([os.path.dirname(__file__)]):
 
     imported_module = import_module('.' + name, package=__name__)
 
