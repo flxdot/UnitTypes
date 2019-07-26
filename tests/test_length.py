@@ -1,7 +1,6 @@
 from unittest import TestCase
 
-from pyUnitTypes.length import KiloMeter, Meter, DeciMeter, CentiMeter, MilliMeter, MicroMeter, NanoMeter, Mile, Yard, \
-    Feet, Inch
+from pyUnitTypes.length import *
 from pyUnitTypes.temperature import Celsius
 
 

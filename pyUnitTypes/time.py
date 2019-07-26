@@ -33,7 +33,7 @@ class Time(BaseUnit):
 
 
 class Day(Time):
-    """A day. You know. / of those and you'll have a week."""
+    """A day. You know. 7 of those and you'll have a week."""
 
     def __init__(self, value=float()):
         """Create instance of the Day class.

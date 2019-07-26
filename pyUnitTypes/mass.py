@@ -1,4 +1,5 @@
-from pyUnitTypes.basics import Conversion, BaseUnit
+from pyUnitTypes.basics import BaseUnit, Conversion, SI_PREFIXES
+from pyUnitTypes.auxiliary import class_factory
 
 
 class Mass(BaseUnit):
@@ -65,31 +66,7 @@ class Gram(Mass):
         :param value: (optional, int or float) the amount of days
         """
 
-        super().__init__(name='KiloGram', symbol='kg', to_base=Conversion(1e-3), value=value)
-
-
-class MilliGram(Mass):
-    """That's not really much."""
-
-    def __init__(self, value=float()):
-        """Create instance of the Tonne class.
-
-        :param value: (optional, int or float) the amount of days
-        """
-
-        super().__init__(name='MilliGram', symbol='mg', to_base=Conversion(1e-6), value=value)
-
-
-class MicroGram(Mass):
-    """That's not really much."""
-
-    def __init__(self, value=float()):
-        """Create instance of the Tonne class.
-
-        :param value: (optional, int or float) the amount of days
-        """
-
-        super().__init__(name='MicroGram', symbol='μg', to_base=Conversion(1e-9), value=value)
+        super().__init__(name='KiloGram', symbol='g', to_base=Conversion(1e-3), value=value)
 
 
 class Pound(Mass):
@@ -138,3 +115,20 @@ class ShortTon(Mass):
         """
 
         super().__init__(name='ShortTon', symbol='ton (US)', to_base=Conversion(907.1847), value=value)
+
+
+# define all SI derives of lengths
+for name, symbol, base10 in SI_PREFIXES:
+    if name == 'Kilo':
+        continue
+    class_name = '{}Meter'.format(name)
+
+    # account for the fact that kilogram is the base unit of the mass
+    base10 /= 1e3
+
+    # generate the new class
+    generatedClass = class_factory(BaseClass=Mass, name=class_name, symbol=symbol, to_base=Conversion(base10))
+    # register the class to the module
+    globals()[generatedClass.__name__] = generatedClass
+    # get rid of the temporary stuff
+    del generatedClass
