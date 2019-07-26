@@ -1,4 +1,5 @@
-from pyUnitTypes.basics import BaseUnit, Conversion
+from pyUnitTypes.basics import BaseUnit, Conversion, SI_PREFIXES
+from pyUnitTypes.auxiliary import class_factory
 
 
 class Substance(BaseUnit):
@@ -45,3 +46,15 @@ class Mole(Substance):
         """
 
         super().__init__(name='Mole', symbol='mol', to_base=Conversion(), value=value)
+
+
+for name, symbol, base10 in SI_PREFIXES:
+    class_name = '{}Mole'.format(name)
+
+    # generate the new class
+    generatedClass = class_factory(BaseClass=Substance, name='{}mol'.format(symbol), symbol=symbol,
+                                   to_base=Conversion(base10))
+    # register the class to the module
+    globals()[generatedClass.__name__] = generatedClass
+    # get rid of the temporary stuff
+    del generatedClass

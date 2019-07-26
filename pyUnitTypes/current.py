@@ -1,4 +1,5 @@
-from pyUnitTypes.basics import BaseUnit, Conversion
+from pyUnitTypes.basics import BaseUnit, Conversion, SI_PREFIXES
+from pyUnitTypes.auxiliary import class_factory
 
 
 class Current(BaseUnit):
@@ -45,3 +46,16 @@ class Ampere(Current):
         """
 
         super().__init__(name='Ampere', symbol='A', to_base=Conversion(), value=value)
+
+
+# define all SI derives of lengths
+for name, symbol, base10 in SI_PREFIXES:
+    class_name = '{}Ampere'.format(name)
+
+    # generate the new class
+    generatedClass = class_factory(BaseClass=Current, name='{}A'.format(symbol), symbol=symbol,
+                                   to_base=Conversion(base10))
+    # register the class to the module
+    globals()[generatedClass.__name__] = generatedClass
+    # get rid of the temporary stuff
+    del generatedClass

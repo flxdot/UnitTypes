@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from pyUnitTypes.length import Meter
-from pyUnitTypes.mass import KiloGram, Gram, MicroGram, MilliGram, Pound, Ton, Tonne, ShortTon, Ounce
+from pyUnitTypes.mass import *
 
 
 class TestTimes(TestCase):

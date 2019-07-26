@@ -2,6 +2,28 @@ import copy
 import math
 from enum import Enum
 
+SI_PREFIXES = [
+    ('Yotta', 'Y', 1e24),
+    ('Zetta', 'Z', 1e21),
+    ('Exa', 'E', 1e18),
+    ('Peta', 'P', 1e15),
+    ('Tera', 'T', 1e12),
+    ('Giga', 'G', 1e9),
+    ('Mega', 'M', 1e6),
+    ('Kilo', 'K', 1e3),
+    ('Hecto', 'H', 1e2),
+    ('Deca', 'D', 1e1),
+    ('Deci', 'd', 1e-1),
+    ('Centi', 'c', 1e-2),
+    ('Milli', 'm', 1e-3),
+    ('Micro', 'm', 1e-6),
+    ('Nano', 'n', 1e-9),
+    ('Pico', 'p', 1e-12),
+    ('Femto', 'f', 1e-15),
+    ('Atto', 'a', 1e-18),
+    ('Zepto', 'z', 1e-21),
+    ('Yocto', 'y', 1e-24),
+]
 
 class System(Enum):
     """Enumeration to switch between unit system. The default system is the metric system."""
@@ -423,8 +445,8 @@ class BaseUnit:
             self.value /= other
             return self
         elif issubclass(type(other), BaseUnit):
-            raise UnknownUnitDivisionError('So far the division of {0} by {1} is unknown.', self.name,
-                                           other.name)
+            raise UnknownUnitDivisionError(
+                'So far the division of {0} by {1} is unknown.'.format(self.name, other.name))
         else:
             raise TypeError(
                 'Can not divide Unit {0} by object of type {1}'.format(self.name, type(other).__name__))
